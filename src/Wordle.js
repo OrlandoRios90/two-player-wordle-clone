@@ -1,25 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Wordle () {
 
     const [playerOneWord, setPlayerOneWord] = useState("");
     const [playerTwoGuess, setPlayerTwoGuess] = useState("");
     const [wordle, setWordle] = useState("");
-    const [guessSpread, setGuessSpread] = useState("");
+    const [guessSpread, setGuessSpread] = useState([0,1,2,3,4]);
     const [numGuess, setNumGuess] = useState(5);
 
+
+    //this useEffect fixed the rendering issue where the state was 1 render behind
+    useEffect(() => {
+        setGuessSpread([...playerTwoGuess]);
+
+    }, [playerTwoGuess]);
 
     const handleSubmit = () => {
         let spreadWord = [...playerOneWord];
         setWordle(spreadWord);
+        setPlayerOneWord("");
     }
 
+    /*
     const handleGuess = (e) => {
-    
         setPlayerTwoGuess(e.target.value);
         setGuessSpread([...playerTwoGuess]);
-               
     }
+    */
 
     const checkGuess = () => {
         
@@ -43,6 +50,18 @@ function Wordle () {
             element.classList.remove("hidden");
         }
         
+        colorLetters();
+    }
+
+    const colorLetters = () => {
+
+        for (let i = 0; i < 5; i++) {
+            if (wordle[i] === guessSpread[i]) {
+                let element = document.getElementById("id" + i);
+                element.classList.add("green");
+                console.log("color letters triggered, i = i")
+            } 
+        }
     }
 
     return (
@@ -50,15 +69,23 @@ function Wordle () {
             <div id="main-content container">
                 <h1>2 Player wordle</h1>
                 <h3>Player 1 enter a 5 letter word: </h3>
-                <input type="text" name="playerOneWord" onChange={(e) => setPlayerOneWord(e.target.value)} value={playerOneWord}></input>
+                <input id="playerOneInput" type="text" name="playerOneWord" onChange={(e) => setPlayerOneWord(e.target.value)} value={playerOneWord}></input>
                 <button onClick={handleSubmit} disabled={playerOneWord.length !== 5}>Submit</button>
-                <br />playerOneWord = {playerOneWord}
-                <br />wordle = {wordle}
+                <br />
+                <br />
                 <h3>Player 2 enter guess: </h3>
-                <input type="text" name="playerTwoGuess" onChange={(e) => handleGuess(e)} />
+                <input type="text" name="playerTwoGuess" onChange={(e) => setPlayerTwoGuess(e.target.value)} />
                 <button onClick={checkGuess} 
                     disabled={playerTwoGuess.length !== 5}>Guess</button>
-                <br />{guessSpread}
+                <br />
+            </div>
+           <div id="guess"> {
+                guessSpread.map((letter, index) => {
+                    return (<div id={"id" + index}>
+                        <h3>{letter}</h3>
+                    </div>)
+                })
+            }
             </div>
             <div class="hidden" id="guess">
                 <h1>Correct!</h1>
