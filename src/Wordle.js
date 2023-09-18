@@ -66,7 +66,7 @@ function Wordle () {
 
     return (
         <>
-            <div id="main-content container">
+            <div id="main-content-container">
                 <h1>2 Player wordle</h1>
                 <h3>Player 1 enter a 5 letter word: </h3>
                 <input id="playerOneInput" type="text" name="playerOneWord" onChange={(e) => setPlayerOneWord(e.target.value)} value={playerOneWord}></input>

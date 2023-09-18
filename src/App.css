@@ -10,3 +10,7 @@ div#id0.green, div#id1.green, div#id2.green, div#id3.green, div#id4.green {
     display: flex;
     flex-direction: row;
 }
+
+#main-content-container {
+    text-align: center;
+}
