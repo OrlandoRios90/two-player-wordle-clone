@@ -1,16 +1,26 @@
-div#guess.hidden {
+div#correct.hidden {
     visibility: hidden;
+    
 }
 
-div#id0.green, div#id1.green, div#id2.green, div#id3.green, div#id4.green {
+.green {
     color: green;
 }
 
-#guess {
-    display: flex;
-    flex-direction: row;
+.orange {
+    color: orange;
 }
 
-#main-content-container {
+#main-content-container, #correct {
     text-align: center;
+}
+
+li {
+    display: inline-block;
+    font-size: 1.4rem;
+}
+
+body {
+    text-align: center;
+    
 }

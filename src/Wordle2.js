@@ -1,3 +1,5 @@
+//this was a first draft and the component will not be used
+
 import { useState, useEffect } from "react";
 
 function Wordle2 () {
@@ -7,9 +9,13 @@ function Wordle2 () {
         playerTwoGuess: "",
         wordle: ["a","b","c","d","e"],
         guessSpread: ["a","b","c","d","e"],
-        numGuess: 0,
+        numGuess: -1,
+        prevGuesses: []
     });
 
+    const [guesses, setGuesses] = useState([]);
+
+    
     // const [isCorrect, setIsCorrect] = useState(false);
 
     //watch for changes in input to update the wordle and guess states
@@ -21,6 +27,7 @@ function Wordle2 () {
         }));
     }, [game.playerOneWord, game.playerTwoGuess]);
 
+
     //once player one submits the wordle, remove the input field and button
     const handleSubmit = () => {
         const inputElement = document.getElementById("playerOneInput");
@@ -29,15 +36,19 @@ function Wordle2 () {
         buttonElement.remove();
     }
 
-    //reset the guess input field and check the guess
+    //reset the guess input field, add guess to list, and check the guess
     const handleGuess = () => {
-        setGame({
-            ...game,
-            playerTwoGuess: ""
-        });
+        
+        setGame((prev) => ({
+            ...prev,
+            playerTwoGuess: "",
+            numGuess: prev.numGuess += 1,
+            prevGuesses: [...prev.prevGuesses, prev.guessSpread]
+        }));
+        console.log("numGuess after button press: " + game.numGuess)
         checkGuess();
     }
-    
+
     const checkGuess = () => {
         
         let correct = true;
@@ -52,7 +63,7 @@ function Wordle2 () {
 
         //if the guess is correct then show the "CORRECT!" div, also remove player two input field/button
         if (correct) {
-            let correctElement = document.getElementById("guess");
+            let correctElement = document.getElementById("correct");
             let playerTwoInputElement = document.getElementById("playerTwoInput");
             let playerTwoButtonElement = document.getElementById("playerTwoButton");
             correctElement.classList.remove("hidden");
@@ -60,22 +71,22 @@ function Wordle2 () {
             playerTwoButtonElement.remove();
         }
         
-        //colorLetters();
+
     }
 
-    //need to redo this function
-    const colorLetters = () => {
 
+    const assignLetterColors = () => {
+        console.log("num guess in assignLetterColors " + game.numGuess)
         for (let i = 0; i < 5; i++) {
-            if (game.wordle[i] === game.guessSpread[i]) {
-                let element = document.getElementById("id" + i);
-                element.classList.add("green");
-                console.log("color letters triggered, i = i")
-            } 
-        }
+            if (game.wordle[i] === game.prevGuesses[game.numGuess][i]) {
+                let correctLetterDiv = document.createElement("li");
+                correctLetterDiv.classList.add("green");
+                correctLetterDiv.innerText= game.prevGuesses[game.numGuess][i];
+                document.body.appendChild(correctLetterDiv);
+            }
+        };
+        
     }
-
-
 
     return (
         <>
@@ -92,12 +103,11 @@ function Wordle2 () {
                     disabled={game.playerTwoGuess.length !== 5}>Guess</button>
                 <br />
             </div>
-           <div id="guess-0">      </div>
-           <div id="guess-1">      </div>
-           <div id="guess-2">      </div>
-           <div id="guess-3">      </div>
-           <div id="guess-4">      </div>
-            <div class="hidden" id="guess">
+            <div class="guesses-container">
+           <div class="guesses" id="guess-1">{ game.numGuess === 0 ? assignLetterColors() : null }</div>
+           <div class="guesses" id="guess-2">{ game.numGuess === 2 ? assignLetterColors() : null }</div>
+           </div>
+            <div class="hidden" id="correct">
                 <h1>CORRECT!</h1>
             </div>
         </>
